@@ -12,5 +12,5 @@
 #include<QNetworkReply>
 #include<QNetworkAccessManager>
 #include<QByteArray>
-
+#include<QTimer>
 #endif // COMMON_H

@@ -122,6 +122,20 @@
         </widget>
        </item>
        <item>
+        <widget class="QComboBox" name="comboBox_httpType">
+         <item>
+          <property name="text">
+           <string>http://</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>https://</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
         <widget class="QLineEdit" name="lineEdit_request"/>
        </item>
        <item>

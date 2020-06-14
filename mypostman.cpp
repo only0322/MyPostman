@@ -25,7 +25,10 @@ void MyPostman::on_btn_exit_clicked()
 
 void MyPostman::on_btn_send_clicked()
 {
-    QString BaseUrl = ui->lineEdit_request->text();   //获取URL
+    QString BaseUrl = ui->comboBox_httpType->currentText();
+    BaseUrl += ui->lineEdit_request->text();   //获取URL
+    BaseUrl += "/";
+    qDebug()<<"BaseUrl"<<BaseUrl;
     QString Type = ui->comboBox->currentText();       //获取请求的类型
 
     QNetworkRequest request;
@@ -39,7 +42,7 @@ void MyPostman::on_btn_send_clicked()
     QByteArray postData;
     postData.append("myname=djy");
 
-    QNetworkReply * reply = m_accessManager->post(request,postData);
+    m_accessManager->post(request,postData);
 
 
 }
@@ -60,7 +63,7 @@ void MyPostman::httpReply(QNetworkReply *reply)
         qDebug()<<"handle errors here";
         QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
         //statusCodeV是HTTP服务器的相应码，reply->error()是Qt定义的错误码，可以参考QT的文档
-        qDebug( "found error ....code: %d %d\n", statusCodeV.toInt(), (int)reply->error());
+        qDebug( "请求发生错误 code: %d %d\n", statusCodeV.toInt(), (int)reply->error());
         qDebug(qPrintable(reply->errorString()));
         ui->textEdit_result->setText(qPrintable(reply->errorString()));
     }
