@@ -14,5 +14,7 @@
 #include<QByteArray>
 #include<QTimer>
 #include<QMessageBox>
+#include<QTableView>
+#include<QStandardItemModel>
 
 #endif // COMMON_H

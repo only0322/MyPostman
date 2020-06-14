@@ -17,6 +17,12 @@ public:
 
     void RequestPOST(QString BaseUrl);
     void RequestGET(QString BaseUrl);
+
+    void TableViewInit(); //初始化表头
+
+
+    void TableClear();      //清空tableview的数据
+
 private slots:
     void on_btn_exit_clicked();
 
@@ -24,8 +30,14 @@ private slots:
 
     void httpReply(QNetworkReply * reply);
 
+    void on_btn_add_clicked();
+
 private:
     Ui::MyPostman *ui;
     QNetworkAccessManager *m_accessManager;
+
+    QStandardItemModel * ParamModel;
+    QStandardItemModel * BodyModel;
+    QStandardItemModel * HeaderModel;
 };
 #endif // MYPOSTMAN_H
