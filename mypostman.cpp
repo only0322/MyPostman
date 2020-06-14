@@ -56,12 +56,27 @@ void MyPostman::RequestPOST(QString BaseUrl)
                          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) "
                          "AppleWebKit/537.36 (KHTML, like Gecko)"
                          " Chrome/78.0.3904.108 Safari/537.36");
+    QJsonObject obj1;
+    int count = ui->tableView_Params->model()->rowCount();
 
-    QByteArray postData; //组给前端的参数
+    for(int i=0;i<count;i++)
+    {
+        QModelIndex name = ParamModel->index(i,0,QModelIndex());
+        QModelIndex value = ParamModel->index(i,1,QModelIndex());
+        QString strName = name.data().toString();
+        QString strValue = value.data().toString();
+        if(strName == "" || strName == nullptr)
+        {
+            continue;   //空数据不发给服务器
+        }
+        obj1.insert(strName,strValue);
+    }
 
-    postData.append("myname=djy");
+    QByteArray postData = QJsonDocument(obj1).toJson(); //组给前端的参数
+
 
     m_accessManager->post(request,postData);
+    qDebug()<<"postData = "<<postData;
 }
 
 void MyPostman::RequestGET(QString BaseUrl)
