@@ -25,11 +25,26 @@ void MyPostman::on_btn_exit_clicked()
 
 void MyPostman::on_btn_send_clicked()
 {
+    QString type = ui->comboBox_prot->currentText();
+    if(type == "POST")
+    {
+        RequestPOST();
+    }
+    else if (type == "GET")
+    {
+        RequestGET();
+    }
+
+
+
+}
+
+void MyPostman::RequestPOST()
+{
     QString BaseUrl = ui->comboBox_httpType->currentText();
     BaseUrl += ui->lineEdit_request->text();   //获取URL
     BaseUrl += "/";
     qDebug()<<"BaseUrl"<<BaseUrl;
-    QString Type = ui->comboBox->currentText();       //获取请求的类型
 
     QNetworkRequest request;
 
@@ -39,16 +54,33 @@ void MyPostman::on_btn_send_clicked()
                          "AppleWebKit/537.36 (KHTML, like Gecko)"
                          " Chrome/78.0.3904.108 Safari/537.36");
 
-    QByteArray postData;
+    QByteArray postData; //组给前端的参数
+
     postData.append("myname=djy");
 
     m_accessManager->post(request,postData);
+}
 
+void MyPostman::RequestGET()
+{
 
 }
 
-
 void MyPostman::httpReply(QNetworkReply *reply)
+{
+    QString httpType = ui->comboBox_prot->currentText();
+    if(httpType == "POST")
+    {
+        ReplyPOST(reply);
+    }
+    else if(httpType == "GET")
+    {
+        ReplyGET(reply);
+    }
+
+}
+
+void MyPostman::ReplyPOST(QNetworkReply * reply)
 {
     if (reply->error() == QNetworkReply::NoError)
     {
@@ -68,4 +100,9 @@ void MyPostman::httpReply(QNetworkReply *reply)
         ui->textEdit_result->setText(qPrintable(reply->errorString()));
     }
     reply->deleteLater();
+}
+
+void MyPostman::ReplyGET(QNetworkReply * reply)
+{
+
 }

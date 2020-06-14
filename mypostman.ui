@@ -93,7 +93,7 @@
      <item row="0" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="comboBox_prot">
          <item>
           <property name="text">
            <string>GET</string>

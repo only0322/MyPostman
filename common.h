@@ -13,4 +13,6 @@
 #include<QNetworkAccessManager>
 #include<QByteArray>
 #include<QTimer>
+#include<QMessageBox>
+
 #endif // COMMON_H

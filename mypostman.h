@@ -15,12 +15,17 @@ public:
     MyPostman(QWidget *parent = nullptr);
     ~MyPostman();
 
+    void RequestPOST();
+    void RequestGET();
 private slots:
     void on_btn_exit_clicked();
 
     void on_btn_send_clicked();
 
     void httpReply(QNetworkReply * reply);
+    void ReplyPOST(QNetworkReply * reply);
+
+    void ReplyGET(QNetworkReply * reply);
 
 private:
     Ui::MyPostman *ui;
