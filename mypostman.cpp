@@ -26,25 +26,26 @@ void MyPostman::on_btn_exit_clicked()
 void MyPostman::on_btn_send_clicked()
 {
     QString type = ui->comboBox_prot->currentText();
+    QString BaseUrl = ui->comboBox_httpType->currentText();
+    BaseUrl += ui->lineEdit_request->text();   //获取URL
+
+    qDebug()<<"BaseUrl"<<BaseUrl;
     if(type == "POST")
     {
-        RequestPOST();
+        RequestPOST(BaseUrl);
     }
     else if (type == "GET")
     {
-        RequestGET();
+        RequestGET(BaseUrl);
     }
 
 
 
 }
 
-void MyPostman::RequestPOST()
+void MyPostman::RequestPOST(QString BaseUrl)
 {
-    QString BaseUrl = ui->comboBox_httpType->currentText();
-    BaseUrl += ui->lineEdit_request->text();   //获取URL
-    BaseUrl += "/";
-    qDebug()<<"BaseUrl"<<BaseUrl;
+
 
     QNetworkRequest request;
 
@@ -61,26 +62,19 @@ void MyPostman::RequestPOST()
     m_accessManager->post(request,postData);
 }
 
-void MyPostman::RequestGET()
+void MyPostman::RequestGET(QString BaseUrl)
 {
+    QNetworkRequest request;
+
+
+
+    request.setUrl(QUrl(BaseUrl));
+    m_accessManager->get(request);
+
 
 }
 
 void MyPostman::httpReply(QNetworkReply *reply)
-{
-    QString httpType = ui->comboBox_prot->currentText();
-    if(httpType == "POST")
-    {
-        ReplyPOST(reply);
-    }
-    else if(httpType == "GET")
-    {
-        ReplyGET(reply);
-    }
-
-}
-
-void MyPostman::ReplyPOST(QNetworkReply * reply)
 {
     if (reply->error() == QNetworkReply::NoError)
     {
@@ -95,14 +89,10 @@ void MyPostman::ReplyPOST(QNetworkReply * reply)
         qDebug()<<"handle errors here";
         QVariant statusCodeV = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
         //statusCodeV是HTTP服务器的相应码，reply->error()是Qt定义的错误码，可以参考QT的文档
-        qDebug( "请求发生错误 code: %d %d\n", statusCodeV.toInt(), (int)reply->error());
-        qDebug(qPrintable(reply->errorString()));
+        qDebug( "请求发生错误 code: %d %d\n", statusCodeV.toInt(),static_cast<int>(reply->error()));
+        qDebug()<<(reply->errorString());
         ui->textEdit_result->setText(qPrintable(reply->errorString()));
     }
     reply->deleteLater();
 }
 
-void MyPostman::ReplyGET(QNetworkReply * reply)
-{
-
-}
