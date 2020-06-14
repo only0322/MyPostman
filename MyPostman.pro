@@ -1,4 +1,6 @@
 QT       += core gui
+QT       += network
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,6 +22,7 @@ SOURCES += \
     mypostman.cpp
 
 HEADERS += \
+    common.h \
     mypostman.h
 
 FORMS += \

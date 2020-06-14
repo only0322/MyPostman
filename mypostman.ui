@@ -93,7 +93,33 @@
      <item row="0" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QComboBox" name="comboBox"/>
+        <widget class="QComboBox" name="comboBox">
+         <item>
+          <property name="text">
+           <string>GET</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>POST</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PATCH</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>PUT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>DELETE</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
         <widget class="QLineEdit" name="lineEdit_request"/>
@@ -117,7 +143,7 @@
      <item row="1" column="0">
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab_Params">
         <attribute name="title">
@@ -186,7 +212,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QTextEdit" name="textEdit_result"/>
+      <widget class="QTextEdit" name="textEdit_result">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
