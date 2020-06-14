@@ -15,6 +15,9 @@ public:
     MyPostman(QWidget *parent = nullptr);
     ~MyPostman();
 
+private slots:
+    void on_btn_exit_clicked();
+
 private:
     Ui::MyPostman *ui;
 };

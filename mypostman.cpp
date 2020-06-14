@@ -13,3 +13,8 @@ MyPostman::~MyPostman()
     delete ui;
 }
 
+
+void MyPostman::on_btn_exit_clicked()
+{
+    close();
+}
