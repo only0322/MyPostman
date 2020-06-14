@@ -31,7 +31,7 @@ void MyPostman::on_btn_send_clicked()
     QString BaseUrl = ui->comboBox_httpType->currentText();
     BaseUrl += ui->lineEdit_request->text();   //获取URL
 
-    qDebug()<<"BaseUrl"<<BaseUrl;
+
     if(type == "POST")
     {
         RequestPOST(BaseUrl);
@@ -67,10 +67,33 @@ void MyPostman::RequestPOST(QString BaseUrl)
 void MyPostman::RequestGET(QString BaseUrl)
 {
     QNetworkRequest request;
+    int count = ui->tableView_Params->model()->rowCount();
 
+    for(int i=0;i<count;i++)
+    {
+        QModelIndex name = ParamModel->index(i,0,QModelIndex());
+        QModelIndex value = ParamModel->index(i,1,QModelIndex());
+        QString strName = name.data().toString();
+        QString strValue = value.data().toString();
+        if(strName == "" || strName == nullptr)
+        {
+            continue;   //空数据不发给服务器
+        }
+        if(i==0)
+        {
+            BaseUrl += "?";
+
+        }
+        else
+        {
+            BaseUrl += "&";
+        }
+        BaseUrl += strName + "=" + strValue;
+    }
 
 
     request.setUrl(QUrl(BaseUrl));
+    qDebug()<<"GET: BaseUrl = "<<BaseUrl;
     m_accessManager->get(request);
 
 
@@ -110,15 +133,22 @@ void MyPostman::TableViewInit()
     BodyModel->setHorizontalHeaderLabels(head);
     HeaderModel->setHorizontalHeaderLabels(head);
 
+    QList<QStandardItem *>item;
+    QStandardItem * item1 = new QStandardItem("");
+    QStandardItem * item2 = new QStandardItem("");
+    item<<item1<<item2;
 
     ui->tableView_Body->setModel(BodyModel);
     ui->tableView_Body->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    BodyModel->appendRow(item);
 
     ui->tableView_Params->setModel(ParamModel);
     ui->tableView_Params->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ParamModel->appendRow(item);
 
     ui->tableView_Headers->setModel(HeaderModel);
     ui->tableView_Headers->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    HeaderModel->appendRow(item);
 
 }
 
@@ -160,4 +190,58 @@ void MyPostman::on_btn_add_clicked()
         ui->tableView_Headers->repaint();
     }
 
+}
+
+void MyPostman::on_tableView_Params_doubleClicked(const QModelIndex &index)
+{
+    //判断下是不是最后一个列
+    int num = index.row();      //这是当前选中的行号
+    QString str = index.data().toString();
+    int Count = ui->tableView_Params->model()->rowCount();
+    if(num == Count-1&& (str != "" || str != nullptr))
+    {
+        QList<QStandardItem *>item;
+        QStandardItem * item1 = new QStandardItem("");
+        QStandardItem * item2 = new QStandardItem("");
+        item<<item1<<item2;
+        ParamModel->appendRow(item);
+        ui->tableView_Params->repaint();
+    }
+
+
+
+}
+
+void MyPostman::on_tableView_Body_doubleClicked(const QModelIndex &index)
+{
+    //判断下是不是最后一个列
+    int num = index.row();      //这是当前选中的行号
+    int Count = ui->tableView_Body->model()->rowCount();
+    QString str = index.data().toString();
+    if(num == Count-1 && (str != "" || str != nullptr))
+    {
+        QList<QStandardItem *>item;
+        QStandardItem * item1 = new QStandardItem("");
+        QStandardItem * item2 = new QStandardItem("");
+        item<<item1<<item2;
+        BodyModel->appendRow(item);
+        ui->tableView_Body->repaint();
+    }
+}
+
+void MyPostman::on_tableView_Headers_doubleClicked(const QModelIndex &index)
+{
+    //判断下是不是最后一个列
+    int num = index.row();      //这是当前选中的行号
+    int Count = ui->tableView_Headers->model()->rowCount();
+    QString str = index.data().toString();
+    if(num == Count-1 &&  (str != "" || str != nullptr))
+    {
+        QList<QStandardItem *>item;
+        QStandardItem * item1 = new QStandardItem("");
+        QStandardItem * item2 = new QStandardItem("");
+        item<<item1<<item2;
+        HeaderModel->appendRow(item);
+        ui->tableView_Headers->repaint();
+    }
 }

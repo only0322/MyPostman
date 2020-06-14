@@ -32,6 +32,12 @@ private slots:
 
     void on_btn_add_clicked();
 
+    void on_tableView_Params_doubleClicked(const QModelIndex &index);
+
+    void on_tableView_Body_doubleClicked(const QModelIndex &index);
+
+    void on_tableView_Headers_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::MyPostman *ui;
     QNetworkAccessManager *m_accessManager;
