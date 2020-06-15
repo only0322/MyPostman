@@ -40,6 +40,8 @@ private slots:
 
     void on_btn_clear_clicked();
 
+    void on_btn_delete_clicked();
+
 private:
     Ui::MyPostman *ui;
     QNetworkAccessManager *m_accessManager;

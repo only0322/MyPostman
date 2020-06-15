@@ -22,6 +22,7 @@ SOURCES += \
     mypostman.cpp
 
 HEADERS += \
+    EasyQJson.h \
     common.h \
     mypostman.h
 

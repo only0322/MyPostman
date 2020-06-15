@@ -47,7 +47,7 @@ void MyPostman::on_btn_send_clicked()
 
 void MyPostman::RequestPOST(QString BaseUrl)
 {
-
+    using namespace DJY;
 
     QNetworkRequest request;
 
@@ -73,7 +73,7 @@ void MyPostman::RequestPOST(QString BaseUrl)
     }
 
     QByteArray postData = QJsonDocument(obj1).toJson(); //组给前端的参数
-
+    qDebug()<<postData<<__LINE__;
 
     m_accessManager->post(request,postData);
     qDebug()<<"postData = "<<postData;
@@ -285,3 +285,46 @@ void MyPostman::on_btn_clear_clicked()
     TableViewInit();    //重新初始化表头
 
 }
+
+void MyPostman::on_btn_delete_clicked()
+{
+    int index = ui->tabWidget->currentIndex();
+
+    if(index == 0)  //Params
+    {
+        int count = ui->tableView_Params->currentIndex().row();
+        int rows = ParamModel->rowCount();
+        if(rows == 1)
+        {
+            return;
+        }
+        ParamModel->removeRow(count);
+        ui->tableView_Params->repaint();
+
+    }
+    else if(index == 1)  //Body
+    {
+        int count = ui->tableView_Body->currentIndex().row();
+        int rows = BodyModel->rowCount();
+        if(rows == 1)
+        {
+            return;
+        }
+        BodyModel->removeRow(count);
+        ui->tableView_Body->repaint();
+    }
+    else if(index == 2)  //Headers
+    {
+        int count = ui->tableView_Headers->currentIndex().row();
+        int rows = HeaderModel->rowCount();
+        if(rows == 1)
+        {
+            return;
+        }
+        HeaderModel->removeRow(count);
+        ui->tableView_Headers->repaint();
+    }
+}
+
+
+

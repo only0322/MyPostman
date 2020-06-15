@@ -16,5 +16,5 @@
 #include<QMessageBox>
 #include<QTableView>
 #include<QStandardItemModel>
-
+#include"EasyQJson.h"
 #endif // COMMON_H
