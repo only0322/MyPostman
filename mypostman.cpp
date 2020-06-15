@@ -6,7 +6,7 @@ MyPostman::MyPostman(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MyPostman)
 {
-    setFixedSize(1280,800);
+    //setFixedSize(1280,800);
 
     ui->setupUi(this);
     TableViewInit(); //初始化表头
@@ -259,4 +259,29 @@ void MyPostman::on_tableView_Headers_doubleClicked(const QModelIndex &index)
         HeaderModel->appendRow(item);
         ui->tableView_Headers->repaint();
     }
+}
+
+void MyPostman::on_btn_clear_clicked()
+{
+    int index = ui->tabWidget->currentIndex();
+    if(index == 0)  //Params
+    {
+        ParamModel->clear();
+        ui->tableView_Params->setModel(ParamModel);
+        ui->tableView_Params->repaint();
+    }
+    else if(index == 1)  //Body
+    {
+        BodyModel->clear();
+        ui->tableView_Params->setModel(BodyModel);
+        ui->tableView_Body->repaint();
+    }
+    else if(index == 2)  //Headers
+    {
+        HeaderModel->clear();
+        ui->tableView_Params->setModel(HeaderModel);
+        ui->tableView_Headers->repaint();
+    }
+    TableViewInit();    //重新初始化表头
+
 }
