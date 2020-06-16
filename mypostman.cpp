@@ -52,10 +52,7 @@ void MyPostman::RequestPOST(QString BaseUrl)
     QNetworkRequest request;
 
     request.setUrl(QUrl(BaseUrl));
-    request.setRawHeader("User-Agent",
-                         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) "
-                         "AppleWebKit/537.36 (KHTML, like Gecko)"
-                         " Chrome/78.0.3904.108 Safari/537.36");
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
     QJsonObject obj1;
     int count = ui->tableView_Params->model()->rowCount();
 
@@ -71,8 +68,9 @@ void MyPostman::RequestPOST(QString BaseUrl)
         }
         obj1.insert(strName,strValue);
     }
-
-    QByteArray postData = QJsonDocument(obj1).toJson(); //组给前端的参数
+    QJsonDocument docu;
+    docu.setObject(obj1);
+    QByteArray postData = docu.toJson(QJsonDocument::Compact); //组给服务器的参数
     qDebug()<<postData<<__LINE__;
 
     m_accessManager->post(request,postData);
