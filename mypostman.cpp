@@ -443,9 +443,12 @@ void MyPostman::getHistory()
     ui->listWidget_history->repaint();
 }
 
-void MyPostman::on_listWidget_clicked(const QModelIndex &index)
+
+
+
+
+void MyPostman::on_listWidget_history_clicked(const QModelIndex &index)
 {
-    qDebug()<<"卧槽咋没反应啊";
     QString ID = index.data().toString();
     QString get_sql = "select ParamData,BodyData,HeaderData,Result,Type,HttpType,Url"
                       " from History where ID = '"+ID+"'";
@@ -460,6 +463,8 @@ void MyPostman::on_listWidget_clicked(const QModelIndex &index)
     else
     {
         qDebug() << "getHistory success";
+        sqlQuery.next();
+
         ui->comboBox_prot->setCurrentIndex(sqlQuery.value(4).toInt());
         ui->comboBox_httpType->setCurrentIndex(sqlQuery.value(5).toInt());
         ui->textEdit_result->setText(sqlQuery.value(3).toString());
@@ -469,10 +474,8 @@ void MyPostman::on_listWidget_clicked(const QModelIndex &index)
         ui->textEdit_result->repaint();
         ui->lineEdit_request->repaint();
 
+
+
     }
 
 }
-
-
-
-

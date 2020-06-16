@@ -56,11 +56,9 @@ private slots:
 
     void getHistory();      //获取操作历史
 
-    void on_listWidget_clicked(const QModelIndex &index);
 
 
-
-
+    void on_listWidget_history_clicked(const QModelIndex &index);
 
 private:
     Ui::MyPostman *ui;
