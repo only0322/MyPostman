@@ -15,48 +15,19 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_6">
-    <item row="0" column="0" rowspan="3">
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="2" column="0">
-       <widget class="QPushButton" name="btn_Listclear">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
+    <item row="1" column="1">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_result">
         <property name="text">
-         <string>清空</string>
+         <string>结果</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QListWidget" name="listWidget">
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_history">
-        <property name="text">
-         <string>操作记录</string>
+      <item>
+       <widget class="QTextEdit" name="textEdit_result">
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -127,21 +98,6 @@
           <item>
            <property name="text">
             <string>POST</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>PATCH</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>PUT</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>DELETE</string>
            </property>
           </item>
          </widget>
@@ -232,19 +188,48 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="1">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_result">
+    <item row="0" column="0" rowspan="3">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="btn_Listclear">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
-         <string>结果</string>
+         <string>清空</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QTextEdit" name="textEdit_result">
-        <property name="readOnly">
-         <bool>true</bool>
+      <item row="1" column="0" colspan="2">
+       <widget class="QListWidget" name="listWidget_history">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_history">
+        <property name="text">
+         <string>操作记录</string>
         </property>
        </widget>
       </item>
@@ -252,6 +237,23 @@
     </item>
     <item row="2" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QComboBox" name="comboBox_User"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_changeUser">
+        <property name="text">
+         <string>切换用户</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_addNewUser">
+        <property name="text">
+         <string>新建用户</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">

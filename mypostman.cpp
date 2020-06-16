@@ -10,8 +10,13 @@ MyPostman::MyPostman(QWidget *parent)
 
     ui->setupUi(this);
     TableViewInit(); //初始化表头
+    getUserList();   //获取用户列表
+    getHistory();    //获取操作历史
     m_accessManager = new QNetworkAccessManager(this);
     connect(m_accessManager,SIGNAL(finished(QNetworkReply *)),this,SLOT(httpReply(QNetworkReply*)));
+    connect(m_accessManager,SIGNAL(finished(QNetworkReply *)),this,SLOT(insertHis()));
+
+    connect(m_accessManager,SIGNAL(finished(QNetworkReply *)),this,SLOT(getHistory()));
 }
 
 MyPostman::~MyPostman()
@@ -132,6 +137,7 @@ void MyPostman::httpReply(QNetworkReply *reply)
         ui->textEdit_result->setText(qPrintable(reply->errorString()));
     }
     reply->deleteLater();
+
 }
 
 //初始化TableView的表头
@@ -324,5 +330,134 @@ void MyPostman::on_btn_delete_clicked()
     }
 }
 
+
+
+
+void MyPostman::on_btn_changeUser_clicked()
+{
+    currentUser = ui->comboBox_User->currentText();
+    QMessageBox::about(nullptr,"提示","切换用户成功，当前用户为:"+currentUser);
+    getHistory();
+}
+
+void MyPostman::on_btn_addNewUser_clicked()
+{
+    addNew = new AddNew;
+    addNew->show();
+}
+
+
+//获取用户列表
+void MyPostman::getUserList()
+{
+    QString getSql = "select UserName from User order by UpdateTime Desc";
+    QSqlQuery sqlQuery;
+    UserList.clear();
+    if(!sqlQuery.exec(getSql))
+    {
+        qDebug() << sqlQuery.lastError();
+
+        currentUser = nullptr;
+    }
+    else
+    {
+        qDebug() << "getUserList success";
+        int count =0;
+        while(sqlQuery.next())
+        {
+            UserList<<sqlQuery.value(0).toString();
+
+            count++;
+        }
+        ui->comboBox_User->insertItems(count,UserList);
+        ui->comboBox_User->repaint();
+        currentUser = ui->comboBox_User->currentText();
+    }
+}
+
+
+//记录操作历史
+void MyPostman::insertHis()
+{
+    QString Url = ui->lineEdit_request->text(); //URL
+    QString result = ui->textEdit_result->toPlainText();    //请求结果
+    QDateTime now = QDateTime::currentDateTime();
+    QString nowTime = now.toString("yyyyMMddhhmmss");
+    int httpType = ui->comboBox_httpType->currentIndex();
+    int prop = ui->comboBox_prot->currentIndex();
+    QString ID = ui->comboBox_prot->currentText()+"-"+ui->comboBox_httpType->currentText()+Url+"-"+
+               nowTime;     //拼接唯一键
+    QString insert_sql = "insert into History(ID,User,ParamData,BodyData,HeaderData,Result,Type,HttpType,Url,CreateTime) "
+                         "values('"+ID+"','"+currentUser+"','','','','"+result+"',"
+            +QString::number(httpType)+","+QString::number(prop)+",'"+Url+"','"+nowTime+"')";
+    qDebug()<<"插入历史记录的sql为"<<insert_sql;
+    QSqlQuery sqlQuery;
+    if(!sqlQuery.exec(insert_sql))
+    {
+        qDebug() << sqlQuery.lastError();
+
+    }
+    else
+    {
+        qDebug() << "记录日志成功";
+
+    }
+
+}
+
+void MyPostman::getHistory()
+{
+    QString sql_his = "select ID,CreateTime from History where User = '"+currentUser+"' order by CreateTime Desc limit 100 ";
+    QSqlQuery sqlQuery;
+    ui->listWidget_history->clear();
+    if(!sqlQuery.exec(sql_his))
+    {
+        qDebug() << sqlQuery.lastError();
+
+        QMessageBox::warning(nullptr,"提示","系统错误，请联系开发者!");
+    }
+    else
+    {
+        qDebug() << "getHistory success";
+
+        while(sqlQuery.next())
+        {
+            ui->listWidget_history->addItem(sqlQuery.value(0).toString());
+
+
+        }
+
+    }
+    ui->listWidget_history->repaint();
+}
+
+void MyPostman::on_listWidget_clicked(const QModelIndex &index)
+{
+    QString ID = index.data().toString();
+    QString get_sql = "select ParamData,BodyData,HeaderData,Result,Type,HttpType,Url"
+                      " from History where ID = '"+ID+"'";
+    qDebug()<<"关联操作记录的sql为"<<get_sql;
+    QSqlQuery sqlQuery;
+    if(!sqlQuery.exec(get_sql))
+    {
+        qDebug() << sqlQuery.lastError();
+
+        QMessageBox::warning(nullptr,"提示","系统错误，请联系开发者!");
+    }
+    else
+    {
+        qDebug() << "getHistory success";
+        ui->comboBox_prot->setCurrentIndex(sqlQuery.value(4).toInt());
+        ui->comboBox_httpType->setCurrentIndex(sqlQuery.value(5).toInt());
+        ui->textEdit_result->setText(sqlQuery.value(3).toString());
+        ui->lineEdit_request->setText(sqlQuery.value(6).toString());
+        ui->comboBox_prot->repaint();
+        ui->comboBox_httpType->repaint();
+        ui->textEdit_result->repaint();
+        ui->lineEdit_request->repaint();
+
+    }
+
+}
 
 

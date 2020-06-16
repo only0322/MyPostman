@@ -23,6 +23,12 @@ public:
 
     void TableClear();      //清空tableview的数据
 
+    void getUserList();     //获取用户列表
+
+
+
+
+
 private slots:
     void on_btn_exit_clicked();
 
@@ -42,6 +48,18 @@ private slots:
 
     void on_btn_delete_clicked();
 
+    void on_btn_changeUser_clicked();
+
+    void on_btn_addNewUser_clicked();
+
+    void insertHis();       //记录操作历史
+
+    void getHistory();      //获取操作历史
+
+    void on_listWidget_clicked(const QModelIndex &index);
+
+
+
 private:
     Ui::MyPostman *ui;
     QNetworkAccessManager *m_accessManager;
@@ -49,5 +67,8 @@ private:
     QStandardItemModel * ParamModel;
     QStandardItemModel * BodyModel;
     QStandardItemModel * HeaderModel;
+    AddNew * addNew;
+    QString currentUser;
+    QStringList UserList;
 };
 #endif // MYPOSTMAN_H
