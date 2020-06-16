@@ -336,8 +336,21 @@ void MyPostman::on_btn_delete_clicked()
 void MyPostman::on_btn_changeUser_clicked()
 {
     currentUser = ui->comboBox_User->currentText();
+    QDateTime now = QDateTime::currentDateTime();
+    QString nowTime = now.toString("yyyyMMddhhmmss");
     QMessageBox::about(nullptr,"提示","切换用户成功，当前用户为:"+currentUser);
+    QString sql_update = "update User set UpdateTime = '"+nowTime+"' where UserName = '"+currentUser+"'";
+    qDebug()<<"更新用户的sql为"<<sql_update;
+    QSqlQuery sqlQuery;
+    if(!sqlQuery.exec(sql_update))
+    {
+        qDebug() << sqlQuery.lastError();
+
+        QMessageBox::warning(nullptr,"提示","系统错误，请联系开发者!");
+    }
+
     getHistory();
+
 }
 
 void MyPostman::on_btn_addNewUser_clicked()
@@ -382,11 +395,10 @@ void MyPostman::insertHis()
     QString Url = ui->lineEdit_request->text(); //URL
     QString result = ui->textEdit_result->toPlainText();    //请求结果
     QDateTime now = QDateTime::currentDateTime();
-    QString nowTime = now.toString("yyyyMMddhhmmss");
+    QString nowTime = now.toString("yyyy-MM-dd hh:mm:ss");
     int httpType = ui->comboBox_httpType->currentIndex();
     int prop = ui->comboBox_prot->currentIndex();
-    QString ID = ui->comboBox_prot->currentText()+"-"+ui->comboBox_httpType->currentText()+Url+"-"+
-               nowTime;     //拼接唯一键
+    QString ID = nowTime+"-"+ui->comboBox_prot->currentText()+"-"+ui->comboBox_httpType->currentText()+Url;     //拼接唯一键
     QString insert_sql = "insert into History(ID,User,ParamData,BodyData,HeaderData,Result,Type,HttpType,Url,CreateTime) "
                          "values('"+ID+"','"+currentUser+"','','','','"+result+"',"
             +QString::number(httpType)+","+QString::number(prop)+",'"+Url+"','"+nowTime+"')";
@@ -433,6 +445,7 @@ void MyPostman::getHistory()
 
 void MyPostman::on_listWidget_clicked(const QModelIndex &index)
 {
+    qDebug()<<"卧槽咋没反应啊";
     QString ID = index.data().toString();
     QString get_sql = "select ParamData,BodyData,HeaderData,Result,Type,HttpType,Url"
                       " from History where ID = '"+ID+"'";
@@ -459,5 +472,7 @@ void MyPostman::on_listWidget_clicked(const QModelIndex &index)
     }
 
 }
+
+
 
 

@@ -60,6 +60,8 @@ private slots:
 
 
 
+
+
 private:
     Ui::MyPostman *ui;
     QNetworkAccessManager *m_accessManager;
