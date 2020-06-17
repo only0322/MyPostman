@@ -172,6 +172,32 @@ void MyPostman::TableViewInit()
 }
 
 
+//初始化表头，不创建空行
+void MyPostman::TableViewInitEmpty()
+{
+    ParamModel = new QStandardItemModel;
+    BodyModel = new QStandardItemModel;
+    HeaderModel = new QStandardItemModel;
+    QStringList head;
+    head<<("key")<<("value");
+    ParamModel->setHorizontalHeaderLabels(head);
+    BodyModel->setHorizontalHeaderLabels(head);
+    HeaderModel->setHorizontalHeaderLabels(head);
+
+
+    ui->tableView_Body->setModel(BodyModel);
+    ui->tableView_Body->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+
+    ui->tableView_Params->setModel(ParamModel);
+    ui->tableView_Params->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+
+    ui->tableView_Headers->setModel(HeaderModel);
+    ui->tableView_Headers->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+}
+
 
 //清空tableview的数据，不包括表头
 void MyPostman::TableClear()
@@ -392,15 +418,50 @@ void MyPostman::getUserList()
 //记录操作历史
 void MyPostman::insertHis()
 {
+    using namespace DJY;
+    EasyQJson Easy;
     QString Url = ui->lineEdit_request->text(); //URL
     QString result = ui->textEdit_result->toPlainText();    //请求结果
     QDateTime now = QDateTime::currentDateTime();
     QString nowTime = now.toString("yyyy-MM-dd hh:mm:ss");
+    QJsonObject Para,Body,Header;
+
+    int ParaCount = ParamModel->rowCount();
+    int BodyCount = BodyModel->rowCount();
+    int HeadCount = HeaderModel->rowCount();
+    for(int i=0;i<ParaCount;i++)
+    {
+        QModelIndex name = ParamModel->index(i,0);
+        QModelIndex value = ParamModel->index(i,1);
+        QString Name = name.data().toString();
+        QString Value = value.data().toString();
+        Para.insert(Name,Value);
+    }
+    for(int i=0;i<BodyCount;i++)
+    {
+        QModelIndex name = BodyModel->index(i,0);
+        QModelIndex value = BodyModel->index(i,1);
+        QString Name = name.data().toString();
+        QString Value = value.data().toString();
+        Body.insert(Name,Value);
+    }
+    for(int i=0;i<HeadCount;i++)
+    {
+        QModelIndex name = HeaderModel->index(i,0);
+        QModelIndex value = HeaderModel->index(i,1);
+        QString Name = name.data().toString();
+        QString Value = value.data().toString();
+        Header.insert(Name,Value);
+    }
+    QString ParaValue = Easy.readObjectReturnQString(Para);
+    QString BodyValue = Easy.readObjectReturnQString(Body);
+    QString HeaderValue = Easy.readObjectReturnQString(Header);
+
     int httpType = ui->comboBox_httpType->currentIndex();
     int prop = ui->comboBox_prot->currentIndex();
     QString ID = nowTime+"-"+ui->comboBox_prot->currentText()+"-"+ui->comboBox_httpType->currentText()+Url;     //拼接唯一键
     QString insert_sql = "insert into History(ID,User,ParamData,BodyData,HeaderData,Result,Type,HttpType,Url,CreateTime) "
-                         "values('"+ID+"','"+currentUser+"','','','','"+result+"',"
+                         "values('"+ID+"','"+currentUser+"','"+ParaValue+"','"+BodyValue+"','"+HeaderValue+"','"+result+"',"
             +QString::number(httpType)+","+QString::number(prop)+",'"+Url+"','"+nowTime+"')";
     qDebug()<<"插入历史记录的sql为"<<insert_sql;
     QSqlQuery sqlQuery;
@@ -449,6 +510,8 @@ void MyPostman::getHistory()
 
 void MyPostman::on_listWidget_history_clicked(const QModelIndex &index)
 {
+    using namespace DJY;
+    EasyQJson Easy;
     QString ID = index.data().toString();
     QString get_sql = "select ParamData,BodyData,HeaderData,Result,Type,HttpType,Url"
                       " from History where ID = '"+ID+"'";
@@ -474,7 +537,57 @@ void MyPostman::on_listWidget_history_clicked(const QModelIndex &index)
         ui->textEdit_result->repaint();
         ui->lineEdit_request->repaint();
 
+        QJsonObject Param = Easy.ReadQStringReturnObject(sqlQuery.value(0).toString());
+        QJsonObject Body = Easy.ReadQStringReturnObject(sqlQuery.value(1).toString());
+        QJsonObject Head = Easy.ReadQStringReturnObject(sqlQuery.value(2).toString());
 
+        QStringList ParamKey = Param.keys();
+        QStringList BodyKey = Body.keys();
+        QStringList HeadKey = Head.keys();
+        qDebug()<<"sqlQuery.value(0)"<<sqlQuery.value(0);
+        qDebug()<<"Param = "<<Param;
+        qDebug()<<"ParamKey = "<<ParamKey;
+        ParamModel->clear();
+        HeaderModel->clear();
+        BodyModel->clear();
+        TableViewInitEmpty();
+        for(int i=0;i<ParamKey.size();i++)
+        {
+            QString key = ParamKey[i];
+            QString value = Param[key].toString();
+            QList<QStandardItem *>item;
+            QStandardItem * item1 = new QStandardItem(key);
+            QStandardItem * item2 = new QStandardItem(value);
+            item<<item1<<item2;
+            ParamModel->appendRow(item);
+        }
+        ui->tableView_Params->repaint();
+
+
+        for(int i=0;i<HeadKey.size();i++)
+        {
+            QString key = HeadKey[i];
+            QString value = Head[key].toString();
+            QList<QStandardItem *>item;
+            QStandardItem * item1 = new QStandardItem(key);
+            QStandardItem * item2 = new QStandardItem(value);
+            item<<item1<<item2;
+            HeaderModel->appendRow(item);
+        }
+        ui->tableView_Headers->repaint();
+
+
+        for(int i=0;i<BodyKey.size();i++)
+        {
+            QString key = BodyKey[i];
+            QString value = Body[key].toString();
+            QList<QStandardItem *>item;
+            QStandardItem * item1 = new QStandardItem(key);
+            QStandardItem * item2 = new QStandardItem(value);
+            item<<item1<<item2;
+            BodyModel->appendRow(item);
+        }
+        ui->tableView_Body->repaint();
 
     }
 

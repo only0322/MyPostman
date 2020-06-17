@@ -35,6 +35,15 @@ namespace DJY{
             return result;
         }
 
+        //读取QString返回QJsonObject
+        QJsonObject ReadQStringReturnObject(const QString jsonString){
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonString.toLocal8Bit().data());
+            if( jsonDocument.isNull() ){
+                return {};
+            }
+            QJsonObject jsonObject = jsonDocument.object();
+            return jsonObject;
+        }
 
         //提供JsonObject和键值，返回Json数组
         QJsonArray readJsonObjectReturnArray(QJsonObject object, QString jsonkey)

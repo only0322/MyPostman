@@ -20,6 +20,7 @@ public:
 
     void TableViewInit(); //初始化表头
 
+    void TableViewInitEmpty();  // 初始化表头，但不新建空行
 
     void TableClear();      //清空tableview的数据
 
